@@ -35,7 +35,7 @@
         .loader-text { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: var(--text-light); margin: 0; text-transform: uppercase; }
 
         /* Categorías */
-        #nav-categorias { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 20px 0; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+        #nav-categorias { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 20px 0; white-space: nowrap; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
         #nav-categorias::-webkit-scrollbar { display: none; }
         .btn-categoria { background: white; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 14px; font-size: 12px; font-weight: 700; color: var(--text-main); text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.04); text-transform: uppercase; transition: all 0.2s; }
 
@@ -89,7 +89,7 @@
         
         /* Footer */
         .footer-container { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
-        .nav-anclas { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; align-items: center; }
+        .nav-anclas { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; align-items: center; scroll-behavior: smooth; }
         .nav-anclas::-webkit-scrollbar { display: none; }
         .btn-ancla { background: rgba(30, 41, 59, 0.95); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 10px; font-weight: 700; text-decoration: none; text-transform: uppercase; backdrop-filter: blur(8px); white-space: nowrap; }
         .btn-ancla-cuenta { background: var(--accent-blue) !important; color: white !important; font-weight: 900 !important; border: none; padding: 10px 16px; border-radius: 12px; font-size: 10px; text-transform: uppercase; white-space: nowrap; display: flex; align-items: center; gap: 5px; cursor: pointer; }
@@ -182,11 +182,6 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbxMoPAlLqMgYlePg_0bjxrhweljh4CBRQ3oRn5dm7C_cJGVRYwRs-ASm5fYG7yZ1SB4/exec"; 
         let datosFull = {};
         
-        // Variables para el Carrusel de Categorías
-        let intervalAnclas;
-        let timeoutReinicio;
-        let pauseAnclas = false;
-
         const htmlBranding = `
         <div class="branding-aideas">
             <img src="https://lh3.googleusercontent.com/d/1SGywAsWA8FAiwUhOd03aEhsBzGrXgotX" alt="Logo Aideas" style="max-height: 50px; margin-bottom: 0px; display: block; margin-left: auto; margin-right: auto;">
@@ -214,10 +209,25 @@
                 if (!MODO_SOLO_CATALOGO) configurarOpciones(datosFull.config);
                 renderizarProductos(datosFull.items);
                 setupFocusEvents(); 
-                iniciarCarruselAnclas(); // Iniciar carrusel al cargar
+                setupInfiniteScroll(); // Activa el retorno automático al inicio
             } catch (e) {
                 document.getElementById('contenedor-productos').innerHTML = "<div style='text-align:center; padding:50px;'>Error de conexión.</div>";
             }
+        }
+
+        // NUEVA FUNCIÓN: Resetea el scroll cuando llega al final
+        function setupInfiniteScroll() {
+            const containers = [document.getElementById('nav-categorias'), document.getElementById('anclas-flotantes')];
+            containers.forEach(container => {
+                container.addEventListener('scroll', () => {
+                    // Si el scroll llega al final (con 5px de tolerancia)
+                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+                        setTimeout(() => {
+                            container.scrollTo({ left: 0, behavior: 'smooth' });
+                        }, 500); // Pausa de medio segundo al llegar al final antes de volver
+                    }
+                });
+            });
         }
 
         function configurarOpciones(config) {
@@ -269,39 +279,13 @@
             for (let cat in grupos) {
                 const id = "cat-" + cat.replace(/\s+/g, '');
                 hN += `<a href="#${id}" class="btn-categoria">${cat}</a>`;
-                hA += `<a href="#${id}" class="btn-ancla" onclick="interaccionManualAnclas()">${cat}</a>`;
+                hA += `<a href="#${id}" class="btn-ancla">${cat}</a>`;
                 hP += `<div class="cat-title" id="${id}">${cat}</div>`;
                 grupos[cat].forEach(p => {
                     hP += `<div class="card"><div class="prod-header"><img src="${p.imagen}"><div class="prod-info"><h4>${p.nombre}</h4><div style="font-size:12px; color:gray;">${p.descripcion || ''}</div><div class="price-tag">$ ${fmt(p.precio)}</div></div></div><div class="controls"><span>CANTIDAD:</span><div class="qty-wrapper"><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},-1)">-</button><input type="number" id="qty-${p.idx}" value="0" readonly><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},1)">+</button></div></div></div>`;
                 });
             }
             navSup.innerHTML = hN; navAnclas.innerHTML = hA; contenedor.innerHTML = hP + htmlBranding;
-        }
-
-        // Lógica del Carrusel Continuo de Categorías
-        function iniciarCarruselAnclas() {
-            const el = document.getElementById('anclas-flotantes');
-            if(!el) return;
-            
-            clearInterval(intervalAnclas);
-            intervalAnclas = setInterval(() => {
-                if(pauseAnclas) return;
-                
-                // Si llegamos al final, volvemos al inicio suavemente
-                if (el.scrollLeft >= (el.scrollWidth - el.clientWidth - 1)) {
-                    el.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    el.scrollBy({ left: 1, behavior: 'auto' });
-                }
-            }, 30); // Velocidad de desplazamiento
-        }
-
-        function interaccionManualAnclas() {
-            pauseAnclas = true;
-            clearTimeout(timeoutReinicio);
-            timeoutReinicio = setTimeout(() => {
-                pauseAnclas = false;
-            }, 7000); // 7 segundos de espera
         }
 
         function cambiarCantidadLista(idx, delta) {
