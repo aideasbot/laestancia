@@ -13,7 +13,38 @@
         .header { background: white; margin: 0 -15px 10px -15px; padding: 20px; display: flex; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-height: 70px; align-items: center; }
         .header img { max-height: 170px; max-width: 220px; object-fit: contain; }
         
-        /* Loader de Puntos */
+        /* --- ESTILOS BUSCADOR --- */
+        .search-container {
+            position: sticky;
+            top: 10px;
+            z-index: 1100;
+            margin: 0 -5px 15px -5px;
+            transition: all 0.3s ease;
+        }
+        .search-wrapper {
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+        .search-wrapper i { color: var(--text-light); font-size: 16px; margin-right: 10px; }
+        .search-wrapper input {
+            border: none;
+            width: 100%;
+            outline: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-main);
+            background: transparent;
+        }
+        /* Ocultar secciones cuando se busca */
+        .searching .cat-title, .searching #seccion-sugerencias, .searching #nav-categorias { display: none !important; }
+        .no-results { text-align: center; padding: 40px; color: var(--text-light); font-weight: 600; }
+        /* ------------------------ */
+
         .logo-dots-loader { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 70px; }
         .logo-dots-loader span { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); opacity: 0; animation: dot-appear 1.2s ease-in-out infinite; }
         .logo-dots-loader span:nth-child(1) { animation-delay: 0s; }
@@ -27,14 +58,12 @@
         @keyframes swing { 0% { transform: rotate(0deg); } 25% { transform: rotate(-45deg); } 75% { transform: rotate(45deg); } 100% { transform: rotate(0deg); } }
         .loader-text { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: var(--text-light); margin: 0; text-transform: uppercase; }
 
-        /* Categorías Superiores */
         #nav-categorias { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 20px 0; white-space: nowrap; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
         #nav-categorias::-webkit-scrollbar { display: none; }
         .btn-categoria { background: white; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 14px; font-size: 12px; font-weight: 700; color: var(--text-main); text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.04); text-transform: uppercase; transition: all 0.2s; }
 
         .cat-title { margin: 25px 0 15px 0; font-size: 18px; font-weight: 800; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid #fee2e2; padding-bottom: 5px; scroll-margin-top: 140px; }
 
-        /* Carrusel de Sugerencias */
         .carrusel-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px 20px 5px; margin: 0 -15px; padding-left: 15px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
         .carrusel-container::-webkit-scrollbar { display: none; }
         
@@ -47,8 +76,7 @@
         .card-sug .btn-qty { width: 30px; height: 30px; font-size: 16px; }
         .card-sug input[type="number"] { width: 25px; font-size: 15px; }
 
-        /* Productos Estándar */
-        .card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: opacity 0.3s ease; }
         .prod-header { display: flex; gap: 16px; margin-bottom: 16px; }
         .prod-header img { width: 85px; height: 85px; object-fit: cover; border-radius: 12px; background: #f8fafc; }
         .prod-info { flex: 1; position: relative; }
@@ -60,50 +88,29 @@
         .btn-qty { background: #f1f5f9; border: 1px solid #e2e8f0; width: 35px; height: 35px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; color: var(--dark); }
         input[type="number"] { width: 35px; border: none; background: transparent; text-align: center; font-size: 17px; font-weight: 800; color: var(--dark); outline: none; }
 
-        /* Opciones */
         .opciones-container { margin-top: 25px; padding: 15px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; scroll-margin-top: 20px; }
         .opciones-container label { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; display: block; margin-bottom: 5px; margin-left: 5px; }
         .input-texto, select { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #fee2e2; margin-bottom: 15px; font-size: 15px; background: white; font-weight: 600; outline: none; box-sizing: border-box; }
         .input-id { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #64748b !important; }
         
-        /* Footer */
         .footer-container { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
         
-        /* Nav Anclas Flotantes */
-        .nav-anclas { 
-            display: flex; 
-            overflow-x: auto; 
-            padding: 5px 0; 
-            align-items: center; 
-            position: relative;
-            width: 100%;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
+        .nav-anclas { display: flex; overflow-x: auto; padding: 5px 0; align-items: center; position: relative; width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .nav-anclas::-webkit-scrollbar { display: none; }
-        
-        .track-anclas {
-            display: flex;
-            gap: 8px;
-            width: max-content;
-            padding-right: 20px;
-        }
+        .track-anclas { display: flex; gap: 8px; width: max-content; padding-right: 20px; }
 
         .btn-ancla { background: rgba(30, 41, 59, 0.95); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 10px; font-weight: 700; text-decoration: none; text-transform: uppercase; backdrop-filter: blur(8px); white-space: nowrap; }
         .btn-ancla-cuenta { background: var(--accent-blue) !important; color: white !important; font-weight: 900 !important; border: none; padding: 10px 16px; border-radius: 12px; font-size: 10px; text-transform: uppercase; white-space: nowrap; display: flex; align-items: center; gap: 5px; cursor: pointer; }
         
         .footer-main { background: rgba(241, 245, 249, 0.96); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 12px; border-radius: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); border: 1px solid rgba(255,255,255,0.6); }
-        
         .footer-info-total { display: flex; flex-direction: column; min-width: 95px; }
         .total-label { font-size: 10px; color: var(--text-light); font-weight: 800; text-transform: uppercase; }
         .total-amount { font-size: 21px; font-weight: 900; color: var(--text-main); }
-        
         .footer-actions { display: flex; gap: 8px; flex: 1; justify-content: flex-end; }
         .btn-footer { border: none; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-transform: uppercase; }
         .btn-edit { background: #e2e8f0; color: var(--text-main); flex: 0.8; }
         .btn-ws { background: var(--success); color: white; flex: 1; }
         
-        /* Resumen */
         .resumen-desplegable { background: white; border-radius: 20px 20px 0 0; padding: 20px; max-height: 350px; overflow-y: auto; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none; border: 1px solid #e2e8f0; margin-bottom: -10px; }
         .resumen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
         .resumen-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
@@ -117,11 +124,7 @@
         .branding-aideas { text-align: center; padding: 40px 20px; background: #f1f5f9; margin: 30px -15px 0 -15px; border-top: 1px solid #e2e8f0; }
         .footer-hidden { display: none !important; }
 
-        body.modo-catalogo .controls, 
-        body.modo-catalogo .footer-main, 
-        body.modo-catalogo .resumen-desplegable,
-        body.modo-catalogo .btn-ancla-cuenta,
-        body.modo-catalogo #seccion-opciones { display: none !important; }
+        body.modo-catalogo .controls, body.modo-catalogo .footer-main, body.modo-catalogo .resumen-desplegable, body.modo-catalogo .btn-ancla-cuenta, body.modo-catalogo #seccion-opciones { display: none !important; }
         body.modo-catalogo { padding-bottom: 80px !important; }
     </style>
 </head>
@@ -134,6 +137,13 @@
             <span></span><span></span><span></span>
         </div>
         <img id="logo-site" src="" alt="Logo" style="display:none;">
+    </div>
+
+    <div class="search-container" id="search-bar">
+        <div class="search-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="input-busqueda" placeholder="¿Qué estás buscando hoy?" oninput="filtrarProductos()">
+        </div>
     </div>
 
     <div id="nav-categorias"></div>
@@ -232,6 +242,7 @@
             if (!datosFull.estaAbierto || !items || items.length === 0) {
                 footer.style.display = 'none';
                 seccionOpciones.style.display = 'none'; 
+                document.getElementById('search-bar').style.display = 'none';
                 let horariosHtml = (datosFull.config && datosFull.config.horarios) ? `<div class="horarios-box"><b>Nuestros Horarios</b>${datosFull.config.horarios.replace(/\n/g, '<br>')}</div>` : "";
                 contenedor.innerHTML = `<div style="text-align:center; padding:60px 20px; background:white; border-radius:20px; margin-top:20px;"><div style="font-size:50px;">😴</div><h2 style="color:var(--primary);">¡Nos vemos pronto!</h2><p>Estamos cerrados por el momento.</p>${horariosHtml}</div>` + htmlBranding;
                 contenedorSug.innerHTML = "";
@@ -249,7 +260,7 @@
                 hSug += `<div class="carrusel-container">`;
                 sugeridos.forEach(p => {
                     const idx = items.findIndex(x => x.nombre === p.nombre);
-                    hSug += `<div class="card-sug"><img src="${p.imagen}"><div><h4>${p.nombre}</h4><div class="price-tag">$ ${fmt(p.precio)}</div></div><div class="controls"><span>CANTIDAD</span><div class="qty-wrapper"><button class="btn-qty" onclick="cambiarCantidadLista(${idx},-1)">-</button><input type="number" id="qty-sug-${idx}" value="0" readonly><button class="btn-qty" onclick="cambiarCantidadLista(${idx},1)">+</button></div></div></div>`;
+                    hSug += `<div class="card-sug" data-nombre="${p.nombre.toLowerCase()}"><img src="${p.imagen}"><div><h4>${p.nombre}</h4><div class="price-tag">$ ${fmt(p.precio)}</div></div><div class="controls"><span>CANTIDAD</span><div class="qty-wrapper"><button class="btn-qty" onclick="cambiarCantidadLista(${idx},-1)">-</button><input type="number" id="qty-sug-${idx}" value="0" readonly><button class="btn-qty" onclick="cambiarCantidadLista(${idx},1)">+</button></div></div></div>`;
                 });
                 hSug += `</div>`;
             }
@@ -264,32 +275,64 @@
                 hA += `<a href="#${id}" class="btn-ancla">${cat}</a>`;
                 hP += `<div class="cat-title" id="${id}">${cat}</div>`;
                 grupos[cat].forEach(p => {
-                    hP += `<div class="card"><div class="prod-header"><img src="${p.imagen}"><div class="prod-info"><h4>${p.nombre}</h4><div style="font-size:12px; color:gray;">${p.descripcion || ''}</div><div class="price-tag">$ ${fmt(p.precio)}</div></div></div><div class="controls"><span>CANTIDAD:</span><div class="qty-wrapper"><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},-1)">-</button><input type="number" id="qty-${p.idx}" value="0" readonly><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},1)">+</button></div></div></div>`;
+                    hP += `<div class="card" data-nombre="${p.nombre.toLowerCase()}"><div class="prod-header"><img src="${p.imagen}"><div class="prod-info"><h4>${p.nombre}</h4><div style="font-size:12px; color:gray;">${p.descripcion || ''}</div><div class="price-tag">$ ${fmt(p.precio)}</div></div></div><div class="controls"><span>CANTIDAD:</span><div class="qty-wrapper"><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},-1)">-</button><input type="number" id="qty-${p.idx}" value="0" readonly><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},1)">+</button></div></div></div>`;
                 });
             }
             
             navSup.innerHTML = hN; 
             contenedor.innerHTML = hP + htmlBranding;
-
             trackAnclas.innerHTML = btnCuentaHtml + hA;
             initInteractiveAutoScroll();
         }
 
-        /* LÓGICA DE AUTO-SCROLL MEJORADA */
-        let intervalAnclas;
-        let timeoutInactividad;
-        let isUserInteracting = false;
+        /* FILTRO DE BÚSQUEDA */
+        function filtrarProductos() {
+            const query = document.getElementById('input-busqueda').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('#contenedor-productos .card');
+            const cont = document.body;
+            let encontrados = 0;
+
+            if (query === "") {
+                cont.classList.remove('searching');
+                cards.forEach(c => c.style.display = 'block');
+                const msg = document.querySelector('.no-results');
+                if (msg) msg.remove();
+                return;
+            }
+
+            cont.classList.add('searching');
+            cards.forEach(card => {
+                if (card.getAttribute('data-nombre').includes(query)) {
+                    card.style.display = 'block';
+                    encontrados++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Manejo de "Sin resultados"
+            let msg = document.querySelector('.no-results');
+            if (encontrados === 0) {
+                if (!msg) {
+                    msg = document.createElement('div');
+                    msg.className = 'no-results';
+                    msg.innerHTML = '<i class="fas fa-search" style="font-size:30px; display:block; margin-bottom:10px; opacity:0.3;"></i> No encontramos platos con ese nombre';
+                    document.getElementById('contenedor-productos').prepend(msg);
+                }
+            } else if (msg) {
+                msg.remove();
+            }
+        }
+
+        /* LÓGICA DE AUTO-SCROLL ANCLAS */
+        let intervalAnclas, timeoutInactividad, isUserInteracting = false;
         const containerAnclas = document.getElementById('anclas-flotantes-container');
 
         function initInteractiveAutoScroll() {
             startLoop();
-            
-            // Eventos para detectar interacción manual
             containerAnclas.addEventListener('touchstart', stopLoop, { passive: true });
             containerAnclas.addEventListener('mousedown', stopLoop);
             containerAnclas.addEventListener('wheel', stopLoop, { passive: true });
-
-            // Al terminar la interacción (soltar el dedo o ratón)
             containerAnclas.addEventListener('touchend', setRestartTimer);
             containerAnclas.addEventListener('mouseup', setRestartTimer);
         }
@@ -299,25 +342,13 @@
             clearInterval(intervalAnclas);
             intervalAnclas = setInterval(() => {
                 const maxScroll = containerAnclas.scrollWidth - containerAnclas.clientWidth;
-                if (containerAnclas.scrollLeft >= maxScroll - 1) {
-                    containerAnclas.scrollLeft = 0;
-                } else {
-                    containerAnclas.scrollLeft += 1;
-                }
+                if (containerAnclas.scrollLeft >= maxScroll - 1) containerAnclas.scrollLeft = 0;
+                else containerAnclas.scrollLeft += 1;
             }, 30);
         }
 
-        function stopLoop() {
-            isUserInteracting = true;
-            clearInterval(intervalAnclas);
-            clearTimeout(timeoutInactividad);
-        }
-
-        function setRestartTimer() {
-            isUserInteracting = false;
-            clearTimeout(timeoutInactividad);
-            timeoutInactividad = setTimeout(startLoop, 6000); // 6 seg de inactividad
-        }
+        function stopLoop() { isUserInteracting = true; clearInterval(intervalAnclas); clearTimeout(timeoutInactividad); }
+        function setRestartTimer() { isUserInteracting = false; clearTimeout(timeoutInactividad); timeoutInactividad = setTimeout(startLoop, 6000); }
 
         function cambiarCantidadLista(idx, delta) {
             const i1 = document.getElementById(`qty-${idx}`), i2 = document.getElementById(`qty-sug-${idx}`);
@@ -335,7 +366,6 @@
 
         function actualizarTotal() {
             let total = 0, htmlRes = `<div class="resumen-header"><strong>Mi Pedido</strong><i class="fas fa-times" onclick="toggleResumen()" style="cursor:pointer"></i></div>`, hayItems = false;
-            
             datosFull.items.forEach((p, i) => {
                 const q = parseInt(document.getElementById(`qty-${i}`)?.value || document.getElementById(`qty-sug-${i}`)?.value || 0);
                 if(q > 0) {
@@ -343,7 +373,6 @@
                     htmlRes += `<div class="resumen-item"><div style="flex:1"><strong>${p.nombre}</strong><br><small>$${fmt(p.precio)}</small></div><div class="resumen-controles"><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},-1)">-</button><span style="font-weight:bold; width:25px; text-align:center">${q}</span><button class="btn-qty" style="width:28px; height:28px;" onclick="cambiarCantidadLista(${i},1)">+</button><button style="color:#ef4444; border:none; background:#fee2e2; width:28px; height:28px; border-radius:8px; margin-left:10px;" onclick="eliminarProducto(${i})"><i class="fas fa-trash"></i></button></div></div>`;
                 }
             });
-
             document.getElementById('total-general').innerText = fmt(total);
             const panel = document.getElementById('resumen-pedido');
             if (panel.style.display === 'block') panel.innerHTML = htmlRes;
