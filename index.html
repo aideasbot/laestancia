@@ -34,7 +34,7 @@
 
         .loader-text { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: var(--text-light); margin: 0; text-transform: uppercase; }
 
-        /* Categorías */
+        /* Categorías Superiores */
         #nav-categorias { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 20px 0; white-space: nowrap; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
         #nav-categorias::-webkit-scrollbar { display: none; }
         .btn-categoria { background: white; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 14px; font-size: 12px; font-weight: 700; color: var(--text-main); text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.04); text-transform: uppercase; transition: all 0.2s; }
@@ -89,8 +89,36 @@
         
         /* Footer */
         .footer-container { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
-        .nav-anclas { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; align-items: center; scroll-behavior: smooth; }
-        .nav-anclas::-webkit-scrollbar { display: none; }
+        
+        /* MODIFICACIÓN: Animación de categorías (Anclas) */
+        .nav-anclas { 
+            display: flex; 
+            gap: 8px; 
+            overflow: hidden; /* Cambiado a hidden para que la animación fluya */
+            padding: 5px 0; 
+            align-items: center; 
+            position: relative;
+            width: 100%;
+        }
+        
+        .track-anclas {
+            display: flex;
+            gap: 8px;
+            animation: scroll-left 25s linear infinite; /* Animación continua */
+            width: max-content;
+        }
+
+        /* Pausar al tocar o hacer hover */
+        .nav-anclas:active .track-anclas,
+        .nav-anclas:hover .track-anclas {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Se desplaza la mitad (porque duplicamos el contenido) */
+        }
+
         .btn-ancla { background: rgba(30, 41, 59, 0.95); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 10px; font-weight: 700; text-decoration: none; text-transform: uppercase; backdrop-filter: blur(8px); white-space: nowrap; }
         .btn-ancla-cuenta { background: var(--accent-blue) !important; color: white !important; font-weight: 900 !important; border: none; padding: 10px 16px; border-radius: 12px; font-size: 10px; text-transform: uppercase; white-space: nowrap; display: flex; align-items: center; gap: 5px; cursor: pointer; }
         
@@ -163,7 +191,10 @@
     </div>
 
     <div class="footer-container" id="footer-pedido" style="display: none;">
-        <div class="nav-anclas" id="anclas-flotantes"></div>
+        <div class="nav-anclas" id="anclas-flotantes-container">
+            <div class="track-anclas" id="anclas-flotantes"></div>
+        </div>
+        
         <div id="resumen-pedido" class="resumen-desplegable"></div>
         <div class="footer-main">
             <div class="footer-info-total">
@@ -178,7 +209,7 @@
     </div>
 
     <script>
-        const MODO_SOLO_CATALOGO = true; 
+        const MODO_SOLO_CATALOGO = false; 
         const API_URL = "https://script.google.com/macros/s/AKfycbxMoPAlLqMgYlePg_0bjxrhweljh4CBRQ3oRn5dm7C_cJGVRYwRs-ASm5fYG7yZ1SB4/exec"; 
         let datosFull = {};
         
@@ -209,25 +240,9 @@
                 if (!MODO_SOLO_CATALOGO) configurarOpciones(datosFull.config);
                 renderizarProductos(datosFull.items);
                 setupFocusEvents(); 
-                setupInfiniteScroll(); // Activa el retorno automático al inicio
             } catch (e) {
                 document.getElementById('contenedor-productos').innerHTML = "<div style='text-align:center; padding:50px;'>Error de conexión.</div>";
             }
-        }
-
-        // NUEVA FUNCIÓN: Resetea el scroll cuando llega al final
-        function setupInfiniteScroll() {
-            const containers = [document.getElementById('nav-categorias'), document.getElementById('anclas-flotantes')];
-            containers.forEach(container => {
-                container.addEventListener('scroll', () => {
-                    // Si el scroll llega al final (con 5px de tolerancia)
-                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
-                        setTimeout(() => {
-                            container.scrollTo({ left: 0, behavior: 'smooth' });
-                        }, 500); // Pausa de medio segundo al llegar al final antes de volver
-                    }
-                });
-            });
         }
 
         function configurarOpciones(config) {
@@ -246,7 +261,7 @@
             const contenedor = document.getElementById('contenedor-productos'), 
                   contenedorSug = document.getElementById('seccion-sugerencias'),
                   seccionOpciones = document.getElementById('seccion-opciones');
-            const navSup = document.getElementById('nav-categorias'), navAnclas = document.getElementById('anclas-flotantes'), footer = document.getElementById('footer-pedido');
+            const navSup = document.getElementById('nav-categorias'), trackAnclas = document.getElementById('anclas-flotantes'), footer = document.getElementById('footer-pedido');
 
             if (!datosFull.estaAbierto || !items || items.length === 0) {
                 footer.style.display = 'none';
@@ -260,7 +275,9 @@
 
             footer.style.display = 'flex';
             let hSug = "", hP = "", hN = "", hA = "";
-            if(datosFull.config.cerrarMesa) hA += `<button class="btn-ancla-cuenta" onclick="enviarPedidoCuenta()"><i class="fas fa-receipt"></i> CUENTA</button>`;
+            
+            // Botón Cuenta
+            let btnCuentaHtml = datosFull.config.cerrarMesa ? `<button class="btn-ancla-cuenta" onclick="enviarPedidoCuenta()"><i class="fas fa-receipt"></i> CUENTA</button>` : "";
 
             const sugeridos = items.filter(p => p.destacado);
             if(sugeridos.length > 0) {
@@ -276,6 +293,7 @@
 
             const grupos = {};
             items.forEach((p, i) => { const c = p.categoria || "General"; if(!grupos[c]) grupos[c] = []; grupos[c].push({...p, idx: i}); });
+            
             for (let cat in grupos) {
                 const id = "cat-" + cat.replace(/\s+/g, '');
                 hN += `<a href="#${id}" class="btn-categoria">${cat}</a>`;
@@ -285,7 +303,17 @@
                     hP += `<div class="card"><div class="prod-header"><img src="${p.imagen}"><div class="prod-info"><h4>${p.nombre}</h4><div style="font-size:12px; color:gray;">${p.descripcion || ''}</div><div class="price-tag">$ ${fmt(p.precio)}</div></div></div><div class="controls"><span>CANTIDAD:</span><div class="qty-wrapper"><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},-1)">-</button><input type="number" id="qty-${p.idx}" value="0" readonly><button class="btn-qty" onclick="cambiarCantidadLista(${p.idx},1)">+</button></div></div></div>`;
                 });
             }
-            navSup.innerHTML = hN; navAnclas.innerHTML = hA; contenedor.innerHTML = hP + htmlBranding;
+            
+            navSup.innerHTML = hN; 
+            contenedor.innerHTML = hP + htmlBranding;
+
+            // Lógica de Carrusel Infinito para el Footer
+            // Duplicamos el contenido (Original + Copia) para que el loop no tenga saltos
+            trackAnclas.innerHTML = btnCuentaHtml + hA + btnCuentaHtml + hA;
+            
+            // Ajustar velocidad según cantidad de categorías
+            const numItems = Object.keys(grupos).length;
+            trackAnclas.style.animationDuration = `${numItems * 4}s`; 
         }
 
         function cambiarCantidadLista(idx, delta) {
